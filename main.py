@@ -188,7 +188,8 @@ def train(
         leaky_rate=leaky_rate,
         w_generator=w_generator,
         win_generator=win_generator,
-        wbias_generator=wbias_generator
+        wbias_generator=wbias_generator,
+        washout=20  # 適切なwashout値を設定
     )
 
     model = ReservoirWithAttention(

@@ -84,14 +84,23 @@ class ReservoirWithAttention(nn.Module):
             nn.Linear(d_model, d_obs)
         )
         self.esn = esn
+        if self.esn._esn_cell.washout is None:
+            self.esn._esn_cell.washout = d_obs  # 適切なwashout値を設定
+
+    def forward(self, enc_input, dec_input, enc_mask, dec_mask):
+        esn_output = self.esn(enc_input)
+        enc_output = self.encoder(esn_output)
+        dec_output = self.decoder(dec_input, enc_output, enc_mask, dec_mask)
+        return dec_output
 
     def forward(self, enc_input, dec_input, enc_mask, dec_mask):
         # ESN の forward メソッドを呼び出して Wout を通した後の出力を取得
-        esn_output = self.esn(enc_input)  # 直接 ESN の出力を取得
-        
+        #esn_output = self.esn(enc_input)  # 直接 ESN の出力を取得
+        #
         # Transformerエンコーダの出力を取得
-        enc_output = self.encoder(esn_output)
-        
+        # enc_output = self.encoder(esn_output)
+        enc_output = self.encoder(enc_input)
+
         # Transformerデコーダの出力を取得
         dec_output = self.decoder(dec_input, enc_output, enc_mask, dec_mask)
         
