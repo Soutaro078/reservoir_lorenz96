@@ -7,8 +7,7 @@ class TransformerEncoder(nn.Module):
         super(TransformerEncoder, self).__init__()
         self.input_layer = nn.Linear(d_obs, d_model)
         self.pe_layer = PositionalEncoding(d_model, seq_len)
-        self.esn = esn
-        encoder_layer = TransformerEncoderLayer_New(d_model, num_heads, esn, dropout=enc_dropout, batch_first=True)
+        encoder_layer = nn.TransformerEncoderLayer(d_model, num_heads, dropout=enc_dropout, batch_first=True)
         self.encoder_layers = nn.TransformerEncoder(encoder_layer, num_layers=enc_num_layers)
 
     def forward(self, enc_input: torch.Tensor) -> torch.Tensor:
